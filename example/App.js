@@ -8,38 +8,112 @@
  * https://github.com/facebook/react-native
  */
 
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, SafeAreaView} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import RNByronRefreshControl from '@byron-react-native/refresh-control';
 
-export default class App extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>☆RNByronRefreshControl example☆</Text>
-        <Text style={styles.instructions}>STATUS: loaded</Text>
-        <Text style={styles.welcome}>☆☆☆</Text>
-        <RNByronRefreshControl />
-      </View>
-    );
+const App = () => {
+  const [list, setList] = useState(randomColors());
+  const [refreshing, setRefreshing] = useState(false);
+  const [title, setTitle] = useState('下拉刷新');
+
+  const onRefresh = () => {
+    return new Promise(resolve => {
+      setTimeout(resolve, 3000);
+    });
+  };
+
+  const onChangeState = event => {
+    const {state} = event.nativeEvent;
+    switch (state) {
+      case 1:
+        setTitle('下拉刷新');
+        setRefreshing(false);
+        break;
+      case 2:
+        setTitle('松开刷新');
+        break;
+      case 3:
+        setTitle('刷新中...');
+        onRefresh().then(() => {
+          setRefreshing(true);
+          setList(randomColors());
+        });
+        break;
+    }
+  };
+  return (
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={list}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => `${index}_${item}`}
+        refreshControl={
+          <RNByronRefreshControl
+            style={styles.control}
+            refreshing={refreshing}
+            onChangeState={onChangeState}>
+            <Text style={styles.control_text}>{title}</Text>
+          </RNByronRefreshControl>
+        }
+        style={{flex: 1}}
+      />
+    </SafeAreaView>
+  );
+};
+
+const renderItem = ({item, index}) => {
+  return (
+    <View style={[styles.item, {backgroundColor: item}]}>
+      <Text style={styles.index}>{index}</Text>
+      <Text style={styles.text}>_{item}</Text>
+    </View>
+  );
+};
+
+export default App;
+
+const randomColors = (size = 30) => {
+  const colors = [];
+  for (let i = 0; i < size; i++) {
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    colors.push('#' + r.toString(16) + g.toString(16) + b.toString(16));
   }
-}
+  return colors;
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  item: {
+    marginHorizontal: 15,
+    marginVertical: 5,
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    justifyContent: 'center',
+    height: 80,
+    borderRadius: 12,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  text: {
+    fontSize: 24,
+    color: '#fff',
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  index: {
+    fontSize: 24,
+    color: '#000',
+  },
+  control: {
+    height: 100,
+    marginTop: -100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  control_text: {
+    fontSize: 18,
+    color: 'red',
   },
 });
