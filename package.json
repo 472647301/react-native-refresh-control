@@ -1,0 +1,41 @@
+{
+  "name": "@byron-react-native/refresh-control",
+  "title": "React Native Refresh Control",
+  "version": "1.0.0",
+  "description": "React Native Refresh Control",
+  "main": "index.js",
+  "files": [
+    "README.md",
+    "android",
+    "index.js",
+    "index.d.ts",
+    "ios",
+    "react-native-refresh-control.podspec"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/472647301/react-native-refresh-control.git",
+    "baseUrl": "https://github.com/472647301/react-native-refresh-control"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": {
+    "name": "byron",
+    "email": "byron.zhuwenbo@gmail.com"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": ">=16.8.1",
+    "react-native": ">=0.60.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "react": "^16.9.0",
+    "react-native": "^0.61.5"
+  }
+}
