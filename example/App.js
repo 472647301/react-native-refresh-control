@@ -8,11 +8,11 @@
  * https://github.com/facebook/react-native
  */
 
-import React, {useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {FlatList, SafeAreaView} from 'react-native';
 import {StyleSheet, Text, View} from 'react-native';
 import {
-  RNByronRefreshControl,
+  ByronRefreshControl,
   RefreshControl,
 } from '@byron-react-native/refresh-control';
 
@@ -20,6 +20,16 @@ const App = () => {
   const [list, setList] = useState(randomColors());
   const [refreshing, setRefreshing] = useState(false);
   const [title, setTitle] = useState('下拉刷新');
+  const refreshRef = useRef();
+
+  useEffect(() => {
+    setTimeout(() => {
+      refreshRef.current?.startRefresh();
+    }, 5000);
+    setTimeout(() => {
+      refreshRef.current?.stopRefresh();
+    }, 6000);
+  }, []);
 
   const onRefresh = () => {
     return new Promise(resolve => {
@@ -60,6 +70,7 @@ const App = () => {
           //   <Text style={styles.control_text}>{title}</Text>
           // </RNByronRefreshControl>
           <RefreshControl
+            ref={refreshRef}
             onRefresh={async () => {
               await onRefresh();
               setList(randomColors());

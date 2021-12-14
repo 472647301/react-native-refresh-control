@@ -9,6 +9,7 @@
     "android",
     "index.js",
     "index.d.ts",
+    "assets",
     "ios",
     "react-native-refresh-control.podspec"
   ],

@@ -5,27 +5,31 @@ import { ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
 import { useEffect, useCallback } from "react";
 
-export const RNByronRefreshControl = requireNativeComponent(
-  "RNByronRefreshControl"
-);
+const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
+
+export class ByronRefreshControl extends React.PureComponent {
+  render() {
+    return (
+      <RNByronRefreshControl {...this.props}>
+        {this.props.children}
+      </RNByronRefreshControl>
+    );
+  }
+}
 
 export const RefreshControl = forwardRef((props, ref) => {
   const [title, setTitle] = useState("下拉刷新");
   const [lastTime, setLastTime] = useState(fetchNowTime());
   const animatedValue = useRef(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
-  const rootRef = useRef();
+  const [beginstate, setBeginstate] = useState(false);
 
   useImperativeHandle(ref, () => ({
     startRefresh: () => {
-      rootRef.current?.setNativeProps({
-        beginstate: true,
-      });
+      setBeginstate(true);
     },
     stopRefresh: () => {
-      rootRef.current?.setNativeProps({
-        beginstate: false,
-      });
+      setBeginstate(false);
     },
   }));
 
@@ -106,14 +110,14 @@ export const RefreshControl = forwardRef((props, ref) => {
     </>
   );
   return (
-    <RNByronRefreshControl
+    <ByronRefreshControl
+      beginstate={beginstate}
       refreshing={refreshing}
       onChangeState={onChangeState}
       style={[styles.header, props.style]}
-      ref={rootRef}
     >
       {props.children ? props.children : NormalRefreshHeader}
-    </RNByronRefreshControl>
+    </ByronRefreshControl>
   );
 });
 
