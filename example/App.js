@@ -11,7 +11,10 @@
 import React, {useState} from 'react';
 import {FlatList, SafeAreaView} from 'react-native';
 import {StyleSheet, Text, View} from 'react-native';
-import RNByronRefreshControl from '@byron-react-native/refresh-control';
+import {
+  RNByronRefreshControl,
+  RefreshControl,
+} from '@byron-react-native/refresh-control';
 
 const App = () => {
   const [list, setList] = useState(randomColors());
@@ -50,12 +53,18 @@ const App = () => {
         renderItem={renderItem}
         keyExtractor={(item, index) => `${index}_${item}`}
         refreshControl={
-          <RNByronRefreshControl
-            style={styles.control}
-            refreshing={refreshing}
-            onChangeState={onChangeState}>
-            <Text style={styles.control_text}>{title}</Text>
-          </RNByronRefreshControl>
+          // <RNByronRefreshControl
+          //   style={styles.control}
+          //   refreshing={refreshing}
+          //   onChangeState={onChangeState}>
+          //   <Text style={styles.control_text}>{title}</Text>
+          // </RNByronRefreshControl>
+          <RefreshControl
+            onRefresh={async () => {
+              await onRefresh();
+              setList(randomColors());
+            }}
+          />
         }
         style={{flex: 1}}
       />
