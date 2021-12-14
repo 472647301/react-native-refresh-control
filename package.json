@@ -4,6 +4,7 @@
   "version": "1.0.0",
   "description": "React Native Refresh Control",
   "main": "index.js",
+  "private": false,
   "files": [
     "README.md",
     "android",
@@ -14,7 +15,8 @@
     "react-native-refresh-control.podspec"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "npm publish --access public"
   },
   "repository": {
     "type": "git",
