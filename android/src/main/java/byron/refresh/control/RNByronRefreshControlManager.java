@@ -2,27 +2,57 @@
 
 package byron.refresh.control;
 
-import android.view.View;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import androidx.appcompat.widget.AppCompatCheckBox;
-
-import com.facebook.react.uimanager.SimpleViewManager;
+import com.facebook.react.common.MapBuilder;
+import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.ThemedReactContext;
+import com.facebook.react.uimanager.annotations.ReactProp;
 
-public class RNByronRefreshControlManager extends SimpleViewManager<View> {
+import java.util.Map;
 
-    public static final String REACT_CLASS = "RNByronRefreshControl";
+public class RNByronRefreshControlManager extends ViewGroupManager<RNByronRefreshControl> {
 
+    @NonNull
     @Override
     public String getName() {
-        return REACT_CLASS;
+        return "RNByronRefreshControl";
     }
 
+    // 初始化
+    @NonNull
     @Override
-    public View createViewInstance(ThemedReactContext c) {
-        // TODO: Implement some actually useful functionality
-        AppCompatCheckBox cb = new AppCompatCheckBox(c);
-        cb.setChecked(true);
-        return cb;
+    protected RNByronRefreshControl createViewInstance(@NonNull ThemedReactContext reactContext) {
+        return new RNByronRefreshControl(reactContext);
+    }
+
+    /**
+     * 自定义事件
+     */
+    @Nullable
+    @Override
+    public Map<String, Object> getExportedCustomDirectEventTypeConstants() {
+        String onChangeStateEvent = RNByronRefreshControl.EVETN_NAME_CHANGE_STATE;
+        String onChangeOffsetEvent = RNByronRefreshControl.EVETN_NAME_CHANGE_OFFSET;
+        return MapBuilder.<String, Object>builder()
+            .put(onChangeStateEvent, MapBuilder.of("registrationName", onChangeStateEvent))
+            .put(onChangeOffsetEvent, MapBuilder.of("registrationName", onChangeOffsetEvent)).build();
+    }
+
+    @ReactProp(name = "refreshing")
+    public void setRefreshing(RNByronRefreshControl view, Boolean refreshing) {
+        if(refreshing){
+            view.finishRefresh();
+        }
+    }
+
+    @ReactProp(name = "beginstate")
+    public void setBeginstate(RNByronRefreshControl view, Boolean beginstate) {
+        if(beginstate){
+            view.autoRefresh();
+        } else  {
+            view.finishRefresh();
+        }
     }
 }
