@@ -22,9 +22,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 - (void)setBeginstate:(BOOL)beginstate {
     if (beginstate) {
-        [self endRefreshing];
-    } else {
         [self beginRefreshing];
+    } else {
+        [self endRefreshing];
     }
 }
 
