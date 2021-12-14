@@ -4,7 +4,7 @@ package byron.refresh.control;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,9 +23,6 @@ public class RNByronRefreshControlPackage implements ReactPackage {
     @NonNull
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        List<ViewManager> views = new ArrayList<>();
-        views.add(new RNByronRefreshControlManager());
-        views.add(new RNByronRefreshHeaderManager());
-        return views;
+        return Arrays.<ViewManager>asList(new RNByronRefreshControlManager());
     }
 }

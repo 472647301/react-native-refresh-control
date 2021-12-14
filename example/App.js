@@ -22,14 +22,14 @@ const App = () => {
   const [title, setTitle] = useState('下拉刷新');
   const refreshRef = useRef();
 
-  useEffect(() => {
-    setTimeout(() => {
-      refreshRef.current?.startRefresh();
-    }, 5000);
-    setTimeout(() => {
-      refreshRef.current?.stopRefresh();
-    }, 6000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     refreshRef.current?.startRefresh();
+  //   }, 5000);
+  //   setTimeout(() => {
+  //     refreshRef.current?.stopRefresh();
+  //   }, 6000);
+  // }, []);
 
   const onRefresh = () => {
     return new Promise(resolve => {

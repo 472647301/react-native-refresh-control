@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { View, Text, Animated } from "react-native";
+import { View, Text, Animated, Platform } from "react-native";
 import { requireNativeComponent, StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
@@ -18,11 +18,12 @@ export class ByronRefreshControl extends React.PureComponent {
 }
 
 export const RefreshControl = forwardRef((props, ref) => {
-  const [title, setTitle] = useState("下拉刷新");
+  const [title, setTitle] = useState("下拉可以刷新");
   const [lastTime, setLastTime] = useState(fetchNowTime());
   const animatedValue = useRef(new Animated.Value(0));
   const [refreshing, setRefreshing] = useState(false);
   const [beginstate, setBeginstate] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useImperativeHandle(ref, () => ({
     startRefresh: () => {
@@ -46,16 +47,18 @@ export const RefreshControl = forwardRef((props, ref) => {
       duration: 200,
       useNativeDriver: true,
     }).start(() => {});
-    setTitle("松开立即刷新");
+    setTitle("释放立即刷新");
   };
 
   const onRefreshing = () => {
+    setLoading(true);
     setTitle("正在刷新...");
     if (!props.onRefresh) {
       setRefreshing(true);
       return;
     }
     props.onRefresh().then(() => {
+      setLoading(false);
       setRefreshing(true);
       setLastTime(fetchNowTime());
     });
@@ -67,7 +70,7 @@ export const RefreshControl = forwardRef((props, ref) => {
       duration: 200,
       useNativeDriver: true,
     }).start(() => {});
-    setTitle("下拉刷新");
+    setTitle("下拉可以刷新");
     setRefreshing(false);
   };
   const onChangeState = useCallback((event) => {
@@ -93,7 +96,7 @@ export const RefreshControl = forwardRef((props, ref) => {
   });
   const NormalRefreshHeader = (
     <>
-      {refreshing ? (
+      {loading ? (
         <ActivityIndicator color={"gray"} />
       ) : (
         <Animated.Image
@@ -103,8 +106,8 @@ export const RefreshControl = forwardRef((props, ref) => {
       )}
       <View style={styles.header_right}>
         <Text style={styles.header_text}>{title}</Text>
-        <Text style={[styles.header_text, { marginTop: 5 }]}>
-          {`最后更新：${lastTime}`}
+        <Text style={[styles.header_text, { marginTop: 5, fontSize: 11 }]}>
+          {`上次更新：${lastTime}`}
         </Text>
       </View>
     </>
@@ -114,7 +117,7 @@ export const RefreshControl = forwardRef((props, ref) => {
       beginstate={beginstate}
       refreshing={refreshing}
       onChangeState={onChangeState}
-      style={[styles.header, props.style]}
+      style={props.style || styles.control}
     >
       {props.children ? props.children : NormalRefreshHeader}
     </ByronRefreshControl>
@@ -123,21 +126,30 @@ export const RefreshControl = forwardRef((props, ref) => {
 
 const fetchNowTime = () => {
   const date = new Date();
+  const M = date.getMonth() + 1;
+  const D = date.getDate();
   const h = date.getHours();
   const m = date.getMinutes();
+  const MM = M < 10 ? "0" + M : M;
+  const DD = D < 10 ? "0" + D : D;
   const hh = h < 10 ? "0" + h : h;
   const mm = m < 10 ? "0" + m : m;
-  return `${hh}:${mm}`;
+  return `${MM}-${DD} ${hh}:${mm}`;
 };
 
 const styles = StyleSheet.create({
-  header: {
-    height: 100,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: -100,
-  },
+  control: Platform.select({
+    ios: {
+      height: 100,
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "center",
+      marginTop: -100,
+    },
+    android: {
+      flex: 1,
+    },
+  }),
   header_left: {
     width: 32,
     height: 32,
@@ -150,6 +162,6 @@ const styles = StyleSheet.create({
   },
   header_text: {
     color: "gray",
-    fontSize: 14,
+    fontSize: 12,
   },
 });

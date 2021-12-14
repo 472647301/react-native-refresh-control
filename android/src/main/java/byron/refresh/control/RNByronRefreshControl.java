@@ -30,7 +30,7 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
   public RNByronRefreshControl(ThemedReactContext context) {
     super(context);
     eventEmitter = context.getJSModule(RCTEventEmitter.class);
-//    this.setRefreshHeader(new ClassicsHeader(context));
+    this.setRefreshHeader(new ClassicsHeader(context));
     this.setEnableLoadMore(false);
     this.setEnableOverScrollDrag(true);
     this.setOnMultiListener(new SimpleMultiListener() {
@@ -63,9 +63,7 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
 
   @Override
   public void addView(View child, int index) {
-    if (child instanceof RNByronRefreshHeader) {
-      this.setRefreshHeader((RNByronRefreshHeader) child,0,300);
-    }else if (child instanceof ReactScrollView) {
+    if (child instanceof ReactScrollView) {
       this.setRefreshContent(child);
     }
   }
