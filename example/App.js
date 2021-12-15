@@ -37,8 +37,7 @@ const App = () => {
     });
   };
 
-  const onChangeState = event => {
-    const {state} = event.nativeEvent;
+  const onChangeState = state => {
     switch (state) {
       case 1:
         setTitle('下拉刷新');
@@ -63,12 +62,12 @@ const App = () => {
         renderItem={renderItem}
         keyExtractor={(item, index) => `${index}_${item}`}
         refreshControl={
-          // <RNByronRefreshControl
+          // <ByronRefreshControl
           //   style={styles.control}
           //   refreshing={refreshing}
           //   onChangeState={onChangeState}>
           //   <Text style={styles.control_text}>{title}</Text>
-          // </RNByronRefreshControl>
+          // </ByronRefreshControl>
           <RefreshControl
             ref={refreshRef}
             onRefresh={async () => {
