@@ -11,7 +11,9 @@ declare module "@byron-react-native/refresh-control" {
     stopRefresh: () => void;
   }
 
-  export class ByronRefreshControl extends React.Component<RefreshControlProps> {
+  export type ByronRefreshControlProps = Omit<RefreshControlProps, "onRefresh">;
+
+  export class ByronRefreshControl extends React.Component<ByronRefreshControlProps> {
     setNativeProps: ({ beginstate }: { beginstate: boolean }) => void;
   }
 }
