@@ -8,9 +8,16 @@ import { useEffect, useCallback } from "react";
 const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
 
 export class ByronRefreshControl extends React.PureComponent {
+  onChangeState = (event) => {
+    const { state } = event.nativeEvent;
+    if (this.props.onChangeState) {
+      this.props.onChangeState(state);
+    }
+  };
+
   render() {
     return (
-      <RNByronRefreshControl {...this.props}>
+      <RNByronRefreshControl {...this.props} onChangeState={this.onChangeState}>
         {this.props.children}
       </RNByronRefreshControl>
     );
@@ -73,8 +80,7 @@ export const RefreshControl = forwardRef((props, ref) => {
     setTitle("下拉可以刷新");
     setRefreshing(false);
   };
-  const onChangeState = useCallback((event) => {
-    const { state } = event.nativeEvent;
+  const onChangeState = useCallback((state) => {
     props.onChangeState && props.onChangeState(state);
     switch (state) {
       case 1:
