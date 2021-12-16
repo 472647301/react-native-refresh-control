@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, Animated, Platform } from "react-native";
 import { requireNativeComponent, StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native";
+import { FlatList, ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
 import { useEffect, useCallback } from "react";
 
@@ -16,6 +16,14 @@ export class ByronRefreshControl extends React.PureComponent {
   };
 
   render() {
+    if (Platform.OS === "android") {
+      return (
+        <RNByronRefreshControl
+          {...this.props}
+          onChangeState={this.onChangeState}
+        />
+      );
+    }
     return (
       <RNByronRefreshControl {...this.props} onChangeState={this.onChangeState}>
         {this.props.children}
@@ -130,6 +138,83 @@ export const RefreshControl = forwardRef((props, ref) => {
   );
 });
 
+export const RefreshFlatList = forwardRef((props, ref) => {
+  const refreshRef = useRef(null);
+  const onEndReachedTracker = useRef({});
+  const [onEndReachedInProgress, setOnEndReachedInProgress] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    startRefresh: () => {
+      refreshRef.current?.startRefresh();
+    },
+    stopRefresh: () => {
+      refreshRef.current?.stopRefresh();
+    },
+  }));
+
+  const onEndReached = async () => {
+    if (!props.onEndReached) {
+      return;
+    }
+    const len = props.data?.length;
+    // If onEndReached has already been called for given data length, then ignore.
+    if (len && onEndReachedTracker.current[len]) {
+      return;
+    }
+    if (len) {
+      onEndReachedTracker.current[len] = true;
+    }
+    setOnEndReachedInProgress(true);
+    await props.onEndReached();
+    setOnEndReachedInProgress(false);
+  };
+
+  const handleScroll = (event) => {
+    props.onScroll?.(event);
+    const offset = event.nativeEvent.contentOffset.y;
+    const visibleLength = event.nativeEvent.layoutMeasurement.height;
+    const contentLength = event.nativeEvent.contentSize.height;
+    const onEndReachedThreshold = props.onEndReachedThreshold || 10;
+    const isScrollAtEnd =
+      contentLength - visibleLength - offset < onEndReachedThreshold;
+
+    if (isScrollAtEnd) {
+      onEndReached();
+    }
+  };
+
+  const onListFooterComponent = () => {
+    const { ListFooterComponent } = props;
+    if (!onEndReachedInProgress) {
+      return null;
+    }
+    if (ListFooterComponent) {
+      return <ListFooterComponent />;
+    }
+    if (!props.onEndReached) {
+      return null;
+    }
+    return (
+      <View style={styles.indicator}>
+        <ActivityIndicator size={"small"} color={"gray"} />
+      </View>
+    );
+  };
+
+  return (
+    <FlatList
+      ref={ref}
+      {...props}
+      onEndReached={null}
+      onScroll={handleScroll}
+      ListFooterComponent={onListFooterComponent}
+      refreshControl={
+        <RefreshControl ref={refreshRef} onRefresh={props.onRefresh} />
+      }
+    />
+  );
+});
+
 const fetchNowTime = () => {
   const date = new Date();
   const M = date.getMonth() + 1;
@@ -169,5 +254,11 @@ const styles = StyleSheet.create({
   header_text: {
     color: "gray",
     fontSize: 12,
+  },
+  indicator: {
+    width: "100%",
+    marginVertical: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
