@@ -32,6 +32,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark 在这里做一些初始化配置（比如添加子控件）
 - (void)prepare {
     [super prepare];
+    self.mj_h = 100;
 }
 
 #pragma mark 在这里设置子控件的位置和尺寸

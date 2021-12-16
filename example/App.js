@@ -14,6 +14,7 @@ import {StyleSheet, Text, View} from 'react-native';
 import {
   ByronRefreshControl,
   RefreshControl,
+  RefreshFlatList,
 } from '@byron-react-native/refresh-control';
 
 const App = () => {
@@ -25,10 +26,13 @@ const App = () => {
   // useEffect(() => {
   //   setTimeout(() => {
   //     refreshRef.current?.startRefresh();
-  //   }, 5000);
+  //   }, 4000);
   //   setTimeout(() => {
   //     refreshRef.current?.stopRefresh();
   //   }, 6000);
+  //   setTimeout(() => {
+  //     refreshRef.current?.scrollToEnd();
+  //   }, 8000);
   // }, []);
 
   const onRefresh = () => {
@@ -55,27 +59,43 @@ const App = () => {
         break;
     }
   };
+  const onFlatListRefresh = async () => {
+    await onRefresh();
+    setList(randomColors());
+  };
+  const onEndReached = async () => {
+    if (list.length > 30) {
+      return;
+    }
+    await onRefresh();
+    setList(_list => {
+      return _list.concat(randomColors());
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList
+      <RefreshFlatList
         data={list}
         renderItem={renderItem}
         keyExtractor={(item, index) => `${index}_${item}`}
-        refreshControl={
-          // <ByronRefreshControl
-          //   style={styles.control}
-          //   refreshing={refreshing}
-          //   onChangeState={onChangeState}>
-          //   <Text style={styles.control_text}>{title}</Text>
-          // </ByronRefreshControl>
-          <RefreshControl
-            ref={refreshRef}
-            onRefresh={async () => {
-              await onRefresh();
-              setList(randomColors());
-            }}
-          />
-        }
+        ref={refreshRef}
+        onRefresh={onFlatListRefresh}
+        onEndReached={onEndReached}
+        // refreshControl={
+        //   // <ByronRefreshControl
+        //   //   style={styles.control}
+        //   //   refreshing={refreshing}
+        //   //   onChangeState={onChangeState}>
+        //   //   <Text style={styles.control_text}>{title}</Text>
+        //   // </ByronRefreshControl>
+        //   <RefreshControl
+        //     ref={refreshRef}
+        //     onRefresh={async () => {
+        //       await onRefresh();
+        //       setList(randomColors());
+        //     }}
+        //   />
+        // }
         style={{flex: 1}}
       />
     </SafeAreaView>
@@ -93,7 +113,7 @@ const renderItem = ({item, index}) => {
 
 export default App;
 
-const randomColors = (size = 30) => {
+const randomColors = (size = 10) => {
   const colors = [];
   for (let i = 0; i < size; i++) {
     const r = Math.floor(Math.random() * 256);

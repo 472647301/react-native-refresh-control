@@ -143,15 +143,27 @@ export const RefreshFlatList = forwardRef((props, ref) => {
   const onEndReachedTracker = useRef({});
   const [onEndReachedInProgress, setOnEndReachedInProgress] = useState(false);
 
-  useImperativeHandle(ref, () => ({
-    startRefresh: () => {
+  // 扩展FlatList方法，暂时没想的其他办法
+  // 不能使用useImperativeHandle扩展
+  useEffect(() => {
+    ref.current["startRefresh"] = () => {
       refreshRef.current?.startRefresh();
-    },
-    stopRefresh: () => {
+    };
+    ref.current["stopRefresh"] = () => {
       refreshRef.current?.stopRefresh();
-    },
-  }));
+    };
+  }, []);
 
+  const onRefresh = async () => {
+    if (!props.onRefresh) {
+      return;
+    }
+    await props.onRefresh();
+    onEndReachedTracker.current = {};
+    if (onEndReachedInProgress) {
+      setOnEndReachedInProgress(false);
+    }
+  };
   const onEndReached = async () => {
     if (!props.onEndReached) {
       return;
@@ -208,9 +220,8 @@ export const RefreshFlatList = forwardRef((props, ref) => {
       onEndReached={null}
       onScroll={handleScroll}
       ListFooterComponent={onListFooterComponent}
-      refreshControl={
-        <RefreshControl ref={refreshRef} onRefresh={props.onRefresh} />
-      }
+      refreshControl={<RefreshControl ref={refreshRef} onRefresh={onRefresh} />}
+      refreshing={false}
     />
   );
 });
