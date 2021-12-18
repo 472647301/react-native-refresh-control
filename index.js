@@ -221,7 +221,7 @@ export const RefreshFlatList = forwardRef((props, ref) => {
       onScroll={handleScroll}
       ListFooterComponent={onListFooterComponent}
       refreshControl={
-        props.disableRefreshControl ? undefined : (
+        props.refreshing ? undefined : (
           <RefreshControl ref={refreshRef} onRefresh={onRefresh} />
         )
       }
