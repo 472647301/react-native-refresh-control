@@ -146,6 +146,9 @@ export const RefreshFlatList = forwardRef((props, ref) => {
   // 扩展FlatList方法，暂时没想的其他办法
   // 不能使用useImperativeHandle扩展
   useEffect(() => {
+    if (!ref || !ref.current) {
+      return;
+    }
     ref.current["startRefresh"] = () => {
       refreshRef.current?.startRefresh();
     };
