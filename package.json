@@ -1,7 +1,7 @@
 {
   "name": "@byron-react-native/refresh-control",
   "title": "React Native Refresh Control",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "React Native Refresh Control",
   "main": "index.js",
   "private": false,
