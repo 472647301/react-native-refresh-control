@@ -12,7 +12,8 @@
     "index.d.ts",
     "assets",
     "ios",
-    "react-native-refresh-control.podspec"
+    "react-native-refresh-control.podspec",
+    "!android/**/build/*"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
