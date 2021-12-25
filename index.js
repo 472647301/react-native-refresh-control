@@ -18,10 +18,12 @@ export class ByronRefreshControl extends React.PureComponent {
   render() {
     if (Platform.OS === "android") {
       return (
-        <RNByronRefreshControl
-          {...this.props}
-          onChangeState={this.onChangeState}
-        />
+        <View style={styles.control}>
+          <RNByronRefreshControl
+            {...this.props}
+            onChangeState={this.onChangeState}
+          />
+        </View>
       );
     }
     return (
@@ -257,6 +259,7 @@ const styles = StyleSheet.create({
     },
     android: {
       flex: 1,
+      overflow: "hidden",
     },
   }),
   header_left: {
