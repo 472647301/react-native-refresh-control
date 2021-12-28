@@ -140,7 +140,7 @@ export const RefreshControl = forwardRef((props, ref) => {
   );
 });
 
-export const RefreshFlatList = forwardRef((props, ref) => {
+const RefreshFlatListView = forwardRef((props, ref) => {
   const refreshRef = useRef(null);
   const onEndReachedTracker = useRef({});
   const [onEndReachedInProgress, setOnEndReachedInProgress] = useState(false);
@@ -233,6 +233,10 @@ export const RefreshFlatList = forwardRef((props, ref) => {
       refreshing={false}
     />
   );
+});
+
+export const RefreshFlatList = React.memo((props) => {
+  return React.createElement(RefreshFlatListView, props);
 });
 
 const fetchNowTime = () => {
