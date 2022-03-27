@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,11 +84,11 @@ public class ClassicsHeader extends ClassicsAbstract<ClassicsHeader> implements 
         View.inflate(context, R.layout.srl_classics_header, this);
 
         final View thisView = this;
-        final View arrowView = mArrowView = thisView.findViewById(R.id.srl_classics_arrow);
-        final View updateView = mLastUpdateText = thisView.findViewById(R.id.srl_classics_update);
-        final View progressView = mProgressView = thisView.findViewById(R.id.srl_classics_progress);
+        final View arrowView = mArrowView = (ImageView) thisView.findViewById(R.id.srl_classics_arrow);
+        final View updateView = mLastUpdateText = (TextView) thisView.findViewById(R.id.srl_classics_update);
+        final View progressView = mProgressView = (ImageView) thisView.findViewById(R.id.srl_classics_progress);
 
-        mTitleText = thisView.findViewById(R.id.srl_classics_title);
+        mTitleText = (TextView) thisView.findViewById(R.id.srl_classics_title);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ClassicsHeader);
 

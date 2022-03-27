@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { View, Text, Animated, Platform } from "react-native";
 import { requireNativeComponent, StyleSheet } from "react-native";
-import { FlatList, ActivityIndicator } from "react-native";
+import { ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
 import { useEffect, useCallback } from "react";
 
@@ -138,105 +138,6 @@ export const RefreshControl = forwardRef((props, ref) => {
       {props.children ? props.children : NormalRefreshHeader}
     </ByronRefreshControl>
   );
-});
-
-const RefreshFlatListView = forwardRef((props, ref) => {
-  const refreshRef = useRef(null);
-  const onEndReachedTracker = useRef({});
-  const [onEndReachedInProgress, setOnEndReachedInProgress] = useState(false);
-
-  // 扩展FlatList方法，暂时没想的其他办法
-  // 不能使用useImperativeHandle扩展
-  useEffect(() => {
-    if (!ref || !ref.current) {
-      return;
-    }
-    ref.current["startRefresh"] = () => {
-      refreshRef.current?.startRefresh();
-    };
-    ref.current["stopRefresh"] = () => {
-      refreshRef.current?.stopRefresh();
-    };
-  }, []);
-
-  const onRefresh = async () => {
-    if (!props.onRefresh) {
-      return;
-    }
-    await props.onRefresh();
-    onEndReachedTracker.current = {};
-    if (onEndReachedInProgress) {
-      setOnEndReachedInProgress(false);
-    }
-  };
-  const onEndReached = async () => {
-    if (!props.onEndReached) {
-      return;
-    }
-    const len = props.data?.length;
-    // If onEndReached has already been called for given data length, then ignore.
-    if (len && onEndReachedTracker.current[len]) {
-      return;
-    }
-    if (len) {
-      onEndReachedTracker.current[len] = true;
-    }
-    setOnEndReachedInProgress(true);
-    await props.onEndReached();
-    setOnEndReachedInProgress(false);
-  };
-
-  const handleScroll = (event) => {
-    props.onScroll?.(event);
-    const offset = event.nativeEvent.contentOffset.y;
-    const visibleLength = event.nativeEvent.layoutMeasurement.height;
-    const contentLength = event.nativeEvent.contentSize.height;
-    const onEndReachedThreshold = props.onEndReachedThreshold || 10;
-    const isScrollAtEnd =
-      contentLength - visibleLength - offset < onEndReachedThreshold;
-
-    if (isScrollAtEnd) {
-      onEndReached();
-    }
-  };
-
-  const onListFooterComponent = () => {
-    const { ListFooterComponent } = props;
-    if (!onEndReachedInProgress) {
-      return null;
-    }
-    if (ListFooterComponent) {
-      return <ListFooterComponent />;
-    }
-    if (!props.onEndReached) {
-      return null;
-    }
-    return (
-      <View style={styles.indicator}>
-        <ActivityIndicator size={"small"} color={"gray"} />
-      </View>
-    );
-  };
-
-  return (
-    <FlatList
-      ref={ref}
-      {...props}
-      onEndReached={null}
-      onScroll={handleScroll}
-      ListFooterComponent={onListFooterComponent}
-      refreshControl={
-        props.refreshing ? undefined : (
-          <RefreshControl ref={refreshRef} onRefresh={onRefresh} />
-        )
-      }
-      refreshing={false}
-    />
-  );
-});
-
-export const RefreshFlatList = React.memo((props) => {
-  return React.createElement(RefreshFlatListView, props);
 });
 
 const fetchNowTime = () => {

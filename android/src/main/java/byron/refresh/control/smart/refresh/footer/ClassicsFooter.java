@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -55,10 +57,10 @@ public class ClassicsFooter extends ClassicsAbstract<ClassicsFooter> implements 
         View.inflate(context, R.layout.srl_classics_footer, this);
 
         final View thisView = this;
-        final View arrowView = mArrowView = thisView.findViewById(R.id.srl_classics_arrow);
-        final View progressView = mProgressView = thisView.findViewById(R.id.srl_classics_progress);
+        final View arrowView = mArrowView = (ImageView) thisView.findViewById(R.id.srl_classics_arrow);
+        final View progressView = mProgressView = (ImageView) thisView.findViewById(R.id.srl_classics_progress);
 
-        mTitleText = thisView.findViewById(R.id.srl_classics_title);
+        mTitleText = (TextView) thisView.findViewById(R.id.srl_classics_title);
 
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.ClassicsFooter);
 
