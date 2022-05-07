@@ -36,10 +36,12 @@ export class ByronRefreshControl extends React.PureComponent {
 
 export const RefreshControl = forwardRef(
   ({ onRefresh, style, ...props }, ref) => {
+    const styleHeight = style?.height || 100;
     const [title, setTitle] = useState("下拉可以刷新");
     const [lastTime, setLastTime] = useState(fetchNowTime());
     const animatedValue = useRef(new Animated.Value(0));
     const [refreshing, setRefreshing] = useState(props.refreshing ?? false);
+    const [height, setHeight] = useState(styleHeight);
 
     useImperativeHandle(ref, () => ({
       startRefresh: () => {
@@ -113,8 +115,8 @@ export const RefreshControl = forwardRef(
       outputRange: ["0deg", "180deg"],
     });
     const NormalRefreshHeader = (
-      <>
-        {loading ? (
+      <View style={styles.row}>
+        {refreshing ? (
           <ActivityIndicator color={"gray"} />
         ) : (
           <Animated.Image
@@ -128,13 +130,16 @@ export const RefreshControl = forwardRef(
             {`上次更新：${lastTime}`}
           </Text>
         </View>
-      </>
+      </View>
     );
     return (
       <ByronRefreshControl
         refreshing={refreshing}
         onChangeState={onChangeState}
-        style={props.style || styles.control}
+        style={[
+          props.style || styles.control,
+          Platform.OS === "ios" ? { height, marginTop: -height } : {},
+        ]}
       >
         {props.children ? props.children : NormalRefreshHeader}
       </ByronRefreshControl>
@@ -158,17 +163,20 @@ const fetchNowTime = () => {
 const styles = StyleSheet.create({
   control: Platform.select({
     ios: {
-      height: 100,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: -100,
+      backgroundColor: "#fff",
+      justifyContent: "flex-end",
     },
     android: {
       flex: 1,
       overflow: "hidden",
     },
   }),
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+  },
   header_left: {
     width: 32,
     height: 32,

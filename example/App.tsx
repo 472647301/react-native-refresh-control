@@ -44,6 +44,7 @@ const App = () => {
         onRefresh={onRefresh}
         onEndReached={onEndReached}
         renderItem={renderItem}
+        contentContainerStyle={styles.list}
       />
     </SafeAreaView>
   );
@@ -75,6 +76,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  list: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   item: {
     marginHorizontal: 15,
