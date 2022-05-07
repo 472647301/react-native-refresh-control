@@ -34,111 +34,113 @@ export class ByronRefreshControl extends React.PureComponent {
   }
 }
 
-export const RefreshControl = forwardRef((props, ref) => {
-  const [title, setTitle] = useState("下拉可以刷新");
-  const [lastTime, setLastTime] = useState(fetchNowTime());
-  const animatedValue = useRef(new Animated.Value(0));
-  const [refreshing, setRefreshing] = useState(false);
-  const [beginstate, setBeginstate] = useState(false);
-  const [loading, setLoading] = useState(false);
+export const RefreshControl = forwardRef(
+  ({ onRefresh, style, ...props }, ref) => {
+    const [title, setTitle] = useState("下拉可以刷新");
+    const [lastTime, setLastTime] = useState(fetchNowTime());
+    const animatedValue = useRef(new Animated.Value(0));
+    const [refreshing, setRefreshing] = useState(props.refreshing ?? false);
 
-  useImperativeHandle(ref, () => ({
-    startRefresh: () => {
-      setBeginstate(true);
-    },
-    stopRefresh: () => {
-      setBeginstate(false);
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      startRefresh: () => {
+        setRefreshing(true);
+      },
+      stopRefresh: () => {
+        setRefreshing(false);
+      },
+    }));
 
-  useEffect(() => {
-    if (typeof props.refreshing !== "boolean") {
-      return;
-    }
-    setRefreshing(props.refreshing);
-  }, [props.refreshing]);
+    const onPullingRefresh = () => {
+      Animated.timing(animatedValue.current, {
+        toValue: -180,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setTitle("释放立即刷新");
+      });
+    };
 
-  const onPullingRefresh = () => {
-    Animated.timing(animatedValue.current, {
-      toValue: -180,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {});
-    setTitle("释放立即刷新");
-  };
-
-  const onRefreshing = () => {
-    setLoading(true);
-    setTitle("正在刷新...");
-    if (!props.onRefresh) {
+    const onRefreshing = () => {
+      setTitle("正在刷新...");
       setRefreshing(true);
-      return;
-    }
-    props.onRefresh().then(() => {
-      setLoading(false);
-      setRefreshing(true);
-      setLastTime(fetchNowTime());
+      if (onRefresh) {
+        onRefresh().then(() => {
+          setRefreshing(false);
+          setLastTime(fetchNowTime());
+        });
+      } else {
+        setTimeout(() => {
+          setRefreshing(false);
+          setLastTime(fetchNowTime());
+        }, 200);
+      }
+    };
+
+    const onIdleRefresh = () => {
+      Animated.timing(animatedValue.current, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setTitle("下拉可以刷新");
+        setRefreshing(false);
+      });
+    };
+
+    const onRefreshFinished = () => {};
+
+    const onChangeState = useCallback((state) => {
+      props.onChangeState && props.onChangeState(state);
+      switch (state) {
+        case 1: // 可以下拉
+          onIdleRefresh();
+          break;
+        case 2: // 正在下拉
+          onPullingRefresh();
+          break;
+        case 3: // 正在刷新
+          onRefreshing();
+          break;
+        case 4: // 刷新完成
+          onRefreshFinished();
+          break;
+        default:
+      }
+    }, []);
+
+    const rotate = animatedValue.current.interpolate({
+      inputRange: [0, 180],
+      outputRange: ["0deg", "180deg"],
     });
-  };
-
-  const onIdleRefresh = () => {
-    Animated.timing(animatedValue.current, {
-      toValue: 0,
-      duration: 200,
-      useNativeDriver: true,
-    }).start(() => {});
-    setTitle("下拉可以刷新");
-    setRefreshing(false);
-  };
-  const onChangeState = useCallback((state) => {
-    props.onChangeState && props.onChangeState(state);
-    switch (state) {
-      case 1:
-        onIdleRefresh();
-        break;
-      case 2:
-        onPullingRefresh();
-        break;
-      case 3:
-        onRefreshing();
-        break;
-      default:
-    }
-  }, []);
-
-  const rotate = animatedValue.current.interpolate({
-    inputRange: [0, 180],
-    outputRange: ["0deg", "180deg"],
-  });
-  const NormalRefreshHeader = (
-    <>
-      {loading ? (
-        <ActivityIndicator color={"gray"} />
-      ) : (
-        <Animated.Image
-          style={[styles.header_left, { transform: [{ rotate }] }]}
-          source={require("./assets/arrow.png")}
-        />
-      )}
-      <View style={styles.header_right}>
-        <Text style={styles.header_text}>{title}</Text>
-        <Text style={[styles.header_text, { marginTop: 5, fontSize: 11 }]}>
-          {`上次更新：${lastTime}`}
-        </Text>
-      </View>
-    </>
-  );
-  return (
-    <ByronRefreshControl
-      beginstate={beginstate}
-      refreshing={refreshing}
-      onChangeState={onChangeState}
-      style={props.style || styles.control}
-    >
-      {props.children ? props.children : NormalRefreshHeader}
-    </ByronRefreshControl>
-  );
-});
+    const NormalRefreshHeader = (
+      <>
+        {loading ? (
+          <ActivityIndicator color={"gray"} />
+        ) : (
+          <Animated.Image
+            style={[styles.header_left, { transform: [{ rotate }] }]}
+            source={require("./assets/arrow.png")}
+          />
+        )}
+        <View style={styles.header_right}>
+          <Text style={styles.header_text}>{title}</Text>
+          <Text style={[styles.header_text, { marginTop: 5, fontSize: 11 }]}>
+            {`上次更新：${lastTime}`}
+          </Text>
+        </View>
+      </>
+    );
+    return (
+      <ByronRefreshControl
+        refreshing={refreshing}
+        onChangeState={onChangeState}
+        style={props.style || styles.control}
+      >
+        {props.children ? props.children : NormalRefreshHeader}
+      </ByronRefreshControl>
+    );
+  }
+);
 
 const fetchNowTime = () => {
   const date = new Date();

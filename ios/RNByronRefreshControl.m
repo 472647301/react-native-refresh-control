@@ -12,7 +12,6 @@ RCT_EXPORT_MODULE()
     return [[RNByronRefreshHeader alloc] init];
 }
 
-RCT_EXPORT_VIEW_PROPERTY(beginstate, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(refreshing, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(onChangeState, RCTDirectEventBlock)
 

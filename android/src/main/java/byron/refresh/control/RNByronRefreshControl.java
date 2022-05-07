@@ -30,6 +30,7 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
   public RNByronRefreshControl(ThemedReactContext context) {
     super(context);
     eventEmitter = context.getJSModule(RCTEventEmitter.class);
+    // 定义下拉刷新头部
     this.setRefreshHeader(new ClassicsHeader(context));
     this.setEnableLoadMore(false);
     this.setEnableOverScrollDrag(true);
@@ -45,6 +46,9 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
           eventEmitter.receiveEvent(getTargetId(), EVETN_NAME_CHANGE_STATE, map);
         } else if (newState == RefreshState.Refreshing) {
           map.putInt("state", 3);
+          eventEmitter.receiveEvent(getTargetId(), EVETN_NAME_CHANGE_STATE, map);
+        } else if (newState == RefreshState.RefreshFinish) {
+          map.putInt("state", 4);
           eventEmitter.receiveEvent(getTargetId(), EVETN_NAME_CHANGE_STATE, map);
         }
       }

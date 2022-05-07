@@ -16,12 +16,6 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 
 - (void)setRefreshing:(BOOL)refreshing {
     if (refreshing) {
-        [self endRefreshing];
-    }
-}
-
-- (void)setBeginstate:(BOOL)beginstate {
-    if (beginstate) {
         [self beginRefreshing];
     } else {
         [self endRefreshing];

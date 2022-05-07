@@ -43,13 +43,6 @@ public class RNByronRefreshControlManager extends ViewGroupManager<RNByronRefres
     @ReactProp(name = "refreshing")
     public void setRefreshing(RNByronRefreshControl view, Boolean refreshing) {
         if(refreshing){
-            view.finishRefresh();
-        }
-    }
-
-    @ReactProp(name = "beginstate")
-    public void setBeginstate(RNByronRefreshControl view, Boolean beginstate) {
-        if(beginstate){
             view.autoRefresh();
         } else  {
             view.finishRefresh();
