@@ -272,7 +272,9 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-refresh-control (1.0.1):
+  - react-native-refresh-control (1.1.1):
+    - React
+  - react-native-spinkit (1.4.1):
     - React
   - React-perflogger (0.66.4)
   - React-RCTActionSheet (0.66.4):
@@ -385,6 +387,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-refresh-control (from `../..`)
+  - react-native-spinkit (from `../node_modules/react-native-spinkit`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
   - React-RCTAnimation (from `../node_modules/react-native/Libraries/NativeAnimation`)
@@ -453,6 +456,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-refresh-control:
     :path: "../.."
+  react-native-spinkit:
+    :path: "../node_modules/react-native-spinkit"
   React-perflogger:
     :path: "../node_modules/react-native/ReactCommon/reactperflogger"
   React-RCTActionSheet:
@@ -511,7 +516,8 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-refresh-control: 96bb7de062584588c8f6caeaa9125fade1f2bee8
+  react-native-refresh-control: d564e2afc4f3fc263478136917cca624781b98ab
+  react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89
   React-RCTAnimation: 743e88b55ac62511ae5c2e22803d4f503f2a3a13
@@ -529,4 +535,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b238204fde808b9d15816fe170aa2c48b884b8b0
 
-COCOAPODS: 1.10.2
+COCOAPODS: 1.11.3
