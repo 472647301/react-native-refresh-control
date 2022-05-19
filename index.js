@@ -137,7 +137,7 @@ export const RefreshControl = forwardRef(
         refreshing={refreshing}
         onChangeState={onChangeState}
         style={[
-          props.style || styles.control,
+          style || styles.control,
           Platform.OS === "ios" ? { height, marginTop: -height } : {},
         ]}
       >
@@ -163,7 +163,6 @@ const fetchNowTime = () => {
 const styles = StyleSheet.create({
   control: Platform.select({
     ios: {
-      backgroundColor: "#fff",
       justifyContent: "flex-end",
     },
     android: {
