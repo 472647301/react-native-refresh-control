@@ -3,7 +3,7 @@ import { View, Text, Animated, Platform } from "react-native";
 import { requireNativeComponent, StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
-import { useEffect, useCallback } from "react";
+import { useCallback } from "react";
 
 const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
 
@@ -36,12 +36,11 @@ export class ByronRefreshControl extends React.PureComponent {
 
 export const RefreshControl = forwardRef(
   ({ onRefresh, style, ...props }, ref) => {
-    const styleHeight = style?.height || 100;
+    const height = style?.height || 100;
     const [title, setTitle] = useState("下拉可以刷新");
     const [lastTime, setLastTime] = useState(fetchNowTime());
     const animatedValue = useRef(new Animated.Value(0));
     const [refreshing, setRefreshing] = useState(props.refreshing ?? false);
-    const [height, setHeight] = useState(styleHeight);
 
     useImperativeHandle(ref, () => ({
       startRefresh: () => {
