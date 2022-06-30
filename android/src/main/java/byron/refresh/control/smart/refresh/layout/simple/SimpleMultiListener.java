@@ -2,7 +2,6 @@ package byron.refresh.control.smart.refresh.layout.simple;
 
 import androidx.annotation.NonNull;
 
-import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshHeader;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;
 import byron.refresh.control.smart.refresh.layout.constant.RefreshState;

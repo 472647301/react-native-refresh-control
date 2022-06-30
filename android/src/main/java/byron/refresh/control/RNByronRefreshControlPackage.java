@@ -23,6 +23,9 @@ public class RNByronRefreshControlPackage implements ReactPackage {
     @NonNull
     @Override
     public List<ViewManager> createViewManagers(@NonNull ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(new RNByronRefreshControlManager());
+        return Arrays.<ViewManager>asList(
+                new RNByronRefreshControlManager(),
+                new RNByronRefreshHeaderManager()
+        );
     }
 }

@@ -1,6 +1,5 @@
 package byron.refresh.control.smart.refresh.layout.listener;
 
-import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshHeader;
 
 /**

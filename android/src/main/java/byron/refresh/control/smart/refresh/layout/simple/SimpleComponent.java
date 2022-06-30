@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import byron.refresh.control.smart.refresh.layout.SmartRefreshLayout;
-import byron.refresh.control.smart.refresh.layout.api.RefreshComponent;
-import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshHeader;
 import byron.refresh.control.smart.refresh.layout.api.RefreshKernel;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;

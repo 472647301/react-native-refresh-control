@@ -15,7 +15,6 @@ import byron.refresh.control.R;
 import byron.refresh.control.smart.refresh.classics.ArrowDrawable;
 import byron.refresh.control.smart.refresh.classics.ClassicsAbstract;
 import byron.refresh.control.smart.refresh.drawable.ProgressDrawable;
-import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;
 import byron.refresh.control.smart.refresh.layout.constant.RefreshState;
 import byron.refresh.control.smart.refresh.layout.constant.SpinnerStyle;

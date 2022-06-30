@@ -11,7 +11,6 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
-import byron.refresh.control.smart.refresh.layout.api.RefreshComponent;
 import byron.refresh.control.R;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;

@@ -12,7 +12,6 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.events.RCTEventEmitter;
 import com.facebook.react.views.scroll.ReactScrollView;
 
-import byron.refresh.control.smart.refresh.header.ClassicsHeader;
 import byron.refresh.control.smart.refresh.layout.SmartRefreshLayout;
 import byron.refresh.control.smart.refresh.layout.api.RefreshHeader;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;
@@ -30,8 +29,6 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
   public RNByronRefreshControl(ThemedReactContext context) {
     super(context);
     eventEmitter = context.getJSModule(RCTEventEmitter.class);
-    // 定义下拉刷新头部
-    this.setRefreshHeader(new ClassicsHeader(context));
     this.setEnableLoadMore(false);
     this.setEnableOverScrollDrag(true);
     this.setOnMultiListener(new SimpleMultiListener() {
@@ -61,13 +58,20 @@ public class RNByronRefreshControl extends SmartRefreshLayout {
       }
     });
   }
+
   private int getTargetId() {
     return this.getId();
   }
 
+  public void setHeight(int height) {
+    this.setHeaderHeight(height);
+  }
+
   @Override
   public void addView(View child, int index) {
-    if (child instanceof ReactScrollView) {
+    if (child instanceof RNByronRefreshHeader) {
+      this.setRefreshHeader((RefreshHeader) child);
+    }else if (child instanceof ReactScrollView) {
       this.setRefreshContent(child);
     }
   }

@@ -2,6 +2,8 @@
 
 package byron.refresh.control;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -47,5 +49,10 @@ public class RNByronRefreshControlManager extends ViewGroupManager<RNByronRefres
         } else  {
             view.finishRefresh();
         }
+    }
+
+    @ReactProp(name = "height")
+    public void setHeight(RNByronRefreshControl view, int height) {
+        view.setHeight(height);
     }
 }

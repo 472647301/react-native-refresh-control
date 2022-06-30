@@ -5,38 +5,40 @@ import { ActivityIndicator } from "react-native";
 import { forwardRef, useImperativeHandle } from "react";
 import { useCallback } from "react";
 
-const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
+const iOS = Platform.OS === "ios";
 
-export class ByronRefreshControl extends React.PureComponent {
-  onChangeState = (event) => {
-    const { state } = event.nativeEvent;
-    if (this.props.onChangeState) {
-      this.props.onChangeState(state);
+const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
+const RNByronRefreshHeader = requireNativeComponent("RNByronRefreshHeader");
+
+export function RNRefreshControl(props) {
+  const onChangeState = (event) => {
+    if (!props.onChangeState) {
+      return;
     }
+    const { state } = event.nativeEvent;
+    props.onChangeState(state);
   };
 
-  render() {
-    if (Platform.OS === "android") {
-      return (
-        <View style={styles.control}>
-          <RNByronRefreshControl
-            {...this.props}
-            onChangeState={this.onChangeState}
-          />
-        </View>
-      );
-    }
+  if (iOS) {
     return (
-      <RNByronRefreshControl {...this.props} onChangeState={this.onChangeState}>
-        {this.props.children}
+      <RNByronRefreshControl {...props} onChangeState={onChangeState}>
+        {props.children}
       </RNByronRefreshControl>
     );
   }
+
+  return (
+    <View style={styles.control}>
+      <RNByronRefreshControl {...props} onChangeState={onChangeState}>
+        {props.children}
+      </RNByronRefreshControl>
+    </View>
+  );
 }
 
 export const RefreshControl = forwardRef(
   ({ onRefresh, style, ...props }, ref) => {
-    const height = style?.height || 100;
+    const [height, setHeight] = useState(100);
     const [title, setTitle] = useState("下拉可以刷新");
     const [lastTime, setLastTime] = useState(fetchNowTime());
     const animatedValue = useRef(new Animated.Value(0));
@@ -113,35 +115,41 @@ export const RefreshControl = forwardRef(
       inputRange: [0, 180],
       outputRange: ["0deg", "180deg"],
     });
-    const NormalRefreshHeader = (
-      <View style={styles.row}>
-        {refreshing ? (
-          <ActivityIndicator color={"gray"} />
-        ) : (
-          <Animated.Image
-            style={[styles.header_left, { transform: [{ rotate }] }]}
-            source={require("./assets/arrow.png")}
-          />
-        )}
-        <View style={styles.header_right}>
-          <Text style={styles.header_text}>{title}</Text>
-          <Text style={[styles.header_text, { marginTop: 5, fontSize: 11 }]}>
-            {`上次更新：${lastTime}`}
-          </Text>
-        </View>
-      </View>
-    );
+
+    const onLayout = (event) => {
+      const layout = event.nativeEvent.layout;
+      if (layout.height !== height) {
+        setHeight(Math.ceil(layout.height));
+      }
+    };
+
+    const HeaderView = iOS ? View : RNByronRefreshHeader;
+
     return (
-      <ByronRefreshControl
+      <RNRefreshControl
         refreshing={refreshing}
         onChangeState={onChangeState}
-        style={[
-          style || styles.control,
-          Platform.OS === "ios" ? { height, marginTop: -height } : {},
-        ]}
+        style={[style.control, style]}
+        height={height}
       >
-        {props.children ? props.children : NormalRefreshHeader}
-      </ByronRefreshControl>
+        <HeaderView style={styles.row} onLayout={onLayout}>
+          {refreshing ? (
+            <ActivityIndicator color={"gray"} />
+          ) : (
+            <Animated.Image
+              style={[styles.header_left, { transform: [{ rotate }] }]}
+              source={require("./assets/arrow.png")}
+            />
+          )}
+          <View style={styles.header_right}>
+            <Text style={styles.header_text}>{title}</Text>
+            <Text style={[styles.header_text, { marginTop: 5, fontSize: 11 }]}>
+              {`上次更新：${lastTime}`}
+            </Text>
+          </View>
+        </HeaderView>
+        {props.children}
+      </RNRefreshControl>
     );
   }
 );
@@ -173,7 +181,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 30,
+    paddingBottom: 30,
   },
   header_left: {
     width: 32,
