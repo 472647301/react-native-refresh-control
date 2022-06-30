@@ -1,17 +1,16 @@
 declare module "@byron-react-native/refresh-control" {
-  import { ViewProps } from "react-native";
+  import { View } from "react-native";
 
-  export interface RefreshControlProps extends ViewProps {
+  export class RNRefreshHeader extends View {}
+
+  export class RNRefreshControl extends View {
     refreshing?: boolean;
-    onRefresh?: () => Promise<void>;
     onChangeState?: (state: number) => void;
   }
-  export class RefreshControl extends React.Component<RefreshControlProps> {
+
+  export class RefreshControl extends View {
+    refreshing?: boolean;
     startRefresh: () => void;
     stopRefresh: () => void;
   }
-
-  export type ByronRefreshControlProps = Omit<RefreshControlProps, "onRefresh">;
-
-  export class ByronRefreshControl extends React.Component<ByronRefreshControlProps> {}
 }
