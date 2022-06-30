@@ -9,7 +9,9 @@ declare module "@byron-react-native/refresh-control" {
     onChangeState?: (state: number) => void;
   }
 
-  export type RNRefreshControlProps = Omit<RefreshControlProps, "onRefresh">;
+  export type RNRefreshControlProps = Omit<RefreshControlProps, "onRefresh"> & {
+    height: number;
+  };
 
   export class RNRefreshControl extends React.Component<RNRefreshControlProps> {}
 
