@@ -8,7 +8,8 @@ import { useCallback } from "react";
 const iOS = Platform.OS === "ios";
 
 const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
-const RNByronRefreshHeader = requireNativeComponent("RNByronRefreshHeader");
+
+export const RNRefreshHeader = requireNativeComponent("RNByronRefreshHeader");
 
 export function RNRefreshControl(props) {
   const onChangeState = (event) => {
@@ -123,7 +124,7 @@ export const RefreshControl = forwardRef(
       }
     };
 
-    const HeaderView = iOS ? View : RNByronRefreshHeader;
+    const HeaderView = iOS ? View : RNRefreshHeader;
 
     return (
       <RNRefreshControl
