@@ -1,10 +1,22 @@
-import React, {useRef, useState} from 'react';
-import {View, Text, Image} from 'react-native';
-import {FlatList, FlatListProps, StyleSheet} from 'react-native';
-import {RefreshControl} from '@byron-react-native/refresh-control';
+import React, {useRef, useState, useCallback} from 'react';
+import {View, Text, Platform, Animated, LayoutChangeEvent} from 'react-native';
+import {
+  FlatList,
+  FlatListProps,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
+import {
+  RefreshControl,
+  RNRefreshControl,
+  RNRefreshHeader,
+  RefreshControlProps,
+} from '@byron-react-native/refresh-control';
 import {NativeScrollEvent, NativeSyntheticEvent} from 'react-native';
 import {forwardRef, useImperativeHandle} from 'react';
 import Spinner from 'react-native-spinkit';
+
+const iOS = Platform.OS === 'ios';
 
 export interface RefreshFlatListProps<ItemT> extends FlatListProps<ItemT> {
   onRefresh?: () => Promise<void>;
@@ -74,11 +86,9 @@ function RefreshFlatList<ItemT>(props: RefreshFlatListProps<ItemT>) {
     if (isScrollAtEnd) onFooter();
   };
 
-  // If you need to customize RefreshControl, please refer to @byron-react-native/refresh-control's RefreshControl implementation,
-  // currently only supports iOS customization
-  // 需要自定义 RefreshControl 请参考 @byron-react-native/refresh-control 的 RefreshControl 实现，目前只支持iOS自定义
   const refreshControl = props.onRefresh ? (
-    <RefreshControl onRefresh={onHeader} />
+    // <RefreshControl onRefresh={onHeader} />
+    <CustomRefreshControl onRefresh={onHeader} />
   ) : (
     void 0
   );
@@ -96,6 +106,137 @@ function RefreshFlatList<ItemT>(props: RefreshFlatListProps<ItemT>) {
     />
   );
 }
+
+export const CustomRefreshControl = forwardRef<any, RefreshControlProps>(
+  ({onRefresh, style, ...props}, ref) => {
+    const [height, setHeight] = useState(100);
+    const [title, setTitle] = useState('下拉可以刷新');
+    const [lastTime, setLastTime] = useState(fetchNowTime());
+    const animatedValue = useRef(new Animated.Value(0));
+    const [refreshing, setRefreshing] = useState(props.refreshing ?? false);
+
+    useImperativeHandle(ref, () => ({
+      startRefresh: () => {
+        setRefreshing(true);
+      },
+      stopRefresh: () => {
+        setRefreshing(false);
+      },
+    }));
+
+    const onPullingRefresh = () => {
+      Animated.timing(animatedValue.current, {
+        toValue: -180,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setTitle('释放立即刷新');
+      });
+    };
+
+    const onRefreshing = () => {
+      setTitle('正在刷新...');
+      setRefreshing(true);
+      if (onRefresh) {
+        onRefresh().then(() => {
+          setRefreshing(false);
+          setLastTime(fetchNowTime());
+        });
+      } else {
+        setTimeout(() => {
+          setRefreshing(false);
+          setLastTime(fetchNowTime());
+        }, 200);
+      }
+    };
+
+    const onIdleRefresh = () => {
+      Animated.timing(animatedValue.current, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setTitle('下拉可以刷新');
+        setRefreshing(false);
+      });
+    };
+
+    const onRefreshFinished = () => {};
+
+    const onChangeState = useCallback((state: number) => {
+      props.onChangeState && props.onChangeState(state);
+      switch (state) {
+        case 1: // 可以下拉
+          onIdleRefresh();
+          break;
+        case 2: // 正在下拉
+          onPullingRefresh();
+          break;
+        case 3: // 正在刷新
+          onRefreshing();
+          break;
+        case 4: // 刷新完成
+          onRefreshFinished();
+          break;
+        default:
+      }
+    }, []);
+
+    const rotate = animatedValue.current.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['0deg', '180deg'],
+    });
+
+    const onLayout = (event: LayoutChangeEvent) => {
+      const layout = event.nativeEvent.layout;
+      if (layout.height !== height) {
+        setHeight(Math.ceil(layout.height));
+      }
+    };
+
+    const HeaderView = iOS ? View : RNRefreshHeader;
+
+    return (
+      <RNRefreshControl
+        refreshing={refreshing}
+        onChangeState={onChangeState}
+        style={[styles.control, style, iOS ? {marginTop: -height} : {}]}
+        height={height}>
+        <HeaderView style={styles.row} onLayout={onLayout}>
+          {refreshing ? (
+            <ActivityIndicator color={'gray'} />
+          ) : (
+            <Animated.Image
+              style={[styles.header_left, {transform: [{rotate}]}]}
+              source={require('./assets/arrow.png')}
+            />
+          )}
+          <View style={styles.header_right}>
+            <Text style={styles.header_text}>{title}</Text>
+            <Text style={[styles.header_text, {marginTop: 5, fontSize: 11}]}>
+              {`上次更新：${lastTime}`}
+            </Text>
+          </View>
+        </HeaderView>
+        {/* {props.children} 不能删除或注释，会导致 Android 无法设置 RefreshContent */}
+        {props.children}
+      </RNRefreshControl>
+    );
+  },
+);
+
+const fetchNowTime = () => {
+  const date = new Date();
+  const M = date.getMonth() + 1;
+  const D = date.getDate();
+  const h = date.getHours();
+  const m = date.getMinutes();
+  const MM = M < 10 ? '0' + M : M;
+  const DD = D < 10 ? '0' + D : D;
+  const hh = h < 10 ? '0' + h : h;
+  const mm = m < 10 ? '0' + m : m;
+  return `${MM}-${DD} ${hh}:${mm}`;
+};
 
 const FooterComponent = forwardRef<FooterRef, {inverted?: boolean | null}>(
   (props, ref) => {
@@ -152,16 +293,45 @@ const FooterComponent = forwardRef<FooterRef, {inverted?: boolean | null}>(
 );
 
 const styles = StyleSheet.create({
+  control: Platform.select<any>({
+    ios: {
+      justifyContent: 'flex-end',
+    },
+    android: {
+      flex: 1,
+      overflow: 'hidden',
+    },
+  }),
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+  },
+  header_left: {
+    width: 32,
+    height: 32,
+    tintColor: 'gray',
+  },
+  header_right: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 15,
+  },
+  header_text: {
+    color: 'gray',
+    fontSize: 12,
+  },
+  indicator: {
+    width: '100%',
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   footer: {
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 20,
-  },
-  indicator: {
-    width: '100%',
-    marginVertical: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   text: {
     color: '#AC9FB0',
