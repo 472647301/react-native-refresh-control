@@ -22,6 +22,10 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
     }
 }
 
+- (void)setHeight:(NSInteger *)height {
+    self.mj_h = (long) height;
+}
+
 #pragma mark - 重写方法
 #pragma mark 在这里做一些初始化配置（比如添加子控件）
 - (void)prepare {

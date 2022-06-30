@@ -129,7 +129,7 @@ export const RefreshControl = forwardRef(
       <RNRefreshControl
         refreshing={refreshing}
         onChangeState={onChangeState}
-        style={[style.control, style]}
+        style={[styles.control, style, iOS ? { marginTop: -height } : {}]}
         height={height}
       >
         <HeaderView style={styles.row} onLayout={onLayout}>
