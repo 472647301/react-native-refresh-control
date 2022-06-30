@@ -148,6 +148,7 @@ export const RefreshControl = forwardRef(
             </Text>
           </View>
         </HeaderView>
+        {/* {props.children} 不能删除或注释，会导致 Android 无法设置 RefreshContent */}
         {props.children}
       </RNRefreshControl>
     );
