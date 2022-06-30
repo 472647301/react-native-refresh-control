@@ -3,6 +3,7 @@ package byron.refresh.control.smart.refresh.layout.wrapper;
 import android.annotation.SuppressLint;
 import android.view.View;
 
+import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.simple.SimpleComponent;
 
 /**

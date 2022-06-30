@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import byron.refresh.control.R;
 import byron.refresh.control.smart.refresh.drawable.PaintDrawable;
+import byron.refresh.control.smart.refresh.layout.api.RefreshComponent;
 import byron.refresh.control.smart.refresh.layout.api.RefreshKernel;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;
 import byron.refresh.control.smart.refresh.layout.constant.SpinnerStyle;

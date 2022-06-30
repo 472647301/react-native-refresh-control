@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 
 import byron.refresh.control.R;
+import byron.refresh.control.smart.refresh.layout.api.RefreshComponent;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

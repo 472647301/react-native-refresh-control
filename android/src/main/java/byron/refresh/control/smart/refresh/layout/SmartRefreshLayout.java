@@ -26,7 +26,9 @@ import android.widget.Scroller;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import byron.refresh.control.smart.refresh.layout.api.RefreshComponent;
 import byron.refresh.control.smart.refresh.layout.api.RefreshContent;
+import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshHeader;
 import byron.refresh.control.smart.refresh.layout.api.RefreshKernel;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;

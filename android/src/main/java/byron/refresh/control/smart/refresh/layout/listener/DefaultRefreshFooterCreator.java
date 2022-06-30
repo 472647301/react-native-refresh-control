@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import byron.refresh.control.smart.refresh.layout.api.RefreshFooter;
 import byron.refresh.control.smart.refresh.layout.api.RefreshLayout;
 
 /**
