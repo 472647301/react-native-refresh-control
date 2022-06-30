@@ -36,8 +36,7 @@ const App = () => {
   };
 
   // If you need to customize RefreshControl, please refer to @byron-react-native/refresh-control's RefreshControl implementation,
-  // currently only supports iOS customization
-  // 需要自定义 RefreshControl 请参考 @byron-react-native/refresh-control 的 RefreshControl 实现，目前只支持iOS自定义
+  // 需要自定义 RefreshControl 请参考 @byron-react-native/refresh-control 的 RefreshControl 实现
 
   return (
     <SafeAreaView style={styles.container}>
