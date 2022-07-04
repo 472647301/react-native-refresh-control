@@ -1,5 +1,12 @@
 import React, {useRef, useState, useCallback} from 'react';
-import {View, Text, Platform, Animated, LayoutChangeEvent} from 'react-native';
+import {
+  View,
+  Text,
+  Platform,
+  Animated,
+  LayoutChangeEvent,
+  ViewStyle,
+} from 'react-native';
 import {
   FlatList,
   FlatListProps,
@@ -88,8 +95,8 @@ function RefreshFlatList<ItemT>(props: RefreshFlatListProps<ItemT>) {
 
   const refreshControl = props.onRefresh ? (
     <RefreshControl onRefresh={onHeader} />
-    // <CustomRefreshControl onRefresh={onHeader} />
   ) : (
+    // <CustomRefreshControl onRefresh={onHeader} />
     void 0
   );
 
@@ -293,7 +300,7 @@ const FooterComponent = forwardRef<FooterRef, {inverted?: boolean | null}>(
 );
 
 const styles = StyleSheet.create({
-  control: Platform.select<any>({
+  control: Platform.select<ViewStyle>({
     ios: {
       justifyContent: 'flex-end',
     },
@@ -301,6 +308,7 @@ const styles = StyleSheet.create({
       flex: 1,
       overflow: 'hidden',
     },
+    default: {},
   }),
   row: {
     flexDirection: 'row',
