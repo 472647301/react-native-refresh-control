@@ -87,8 +87,8 @@ function RefreshFlatList<ItemT>(props: RefreshFlatListProps<ItemT>) {
   };
 
   const refreshControl = props.onRefresh ? (
-    // <RefreshControl onRefresh={onHeader} />
-    <CustomRefreshControl onRefresh={onHeader} />
+    <RefreshControl onRefresh={onHeader} />
+    // <CustomRefreshControl onRefresh={onHeader} />
   ) : (
     void 0
   );

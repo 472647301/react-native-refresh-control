@@ -63,6 +63,9 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark 监听拖拽比例（控件被拖出来的比例）
 - (void)setPullingPercent:(CGFloat)pullingPercent {
     [super setPullingPercent:pullingPercent];
+    if(_onChangeOffset) {
+        _onChangeOffset(@{@"offset": @(pullingPercent * self.mj_h)});
+    }
 }
 
 @synthesize refreshing;

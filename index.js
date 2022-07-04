@@ -20,9 +20,21 @@ export function RNRefreshControl(props) {
     props.onChangeState(state);
   };
 
+  const onChangeOffset = (event) => {
+    if (!props.onChangeState) {
+      return;
+    }
+    const { offset } = event.nativeEvent;
+    props.onChangeOffset(offset);
+  };
+
   if (iOS) {
     return (
-      <RNByronRefreshControl {...props} onChangeState={onChangeState}>
+      <RNByronRefreshControl
+        {...props}
+        onChangeState={onChangeState}
+        onChangeOffset={onChangeOffset}
+      >
         {props.children}
       </RNByronRefreshControl>
     );
@@ -30,7 +42,11 @@ export function RNRefreshControl(props) {
 
   return (
     <View style={styles.control}>
-      <RNByronRefreshControl {...props} onChangeState={onChangeState}>
+      <RNByronRefreshControl
+        {...props}
+        onChangeState={onChangeState}
+        onChangeOffset={onChangeOffset}
+      >
         {props.children}
       </RNByronRefreshControl>
     </View>
@@ -112,6 +128,11 @@ export const RefreshControl = forwardRef(
       }
     }, []);
 
+    // 自己做节流
+    const onChangeOffset = (offset) => {
+      props.onChangeOffset && props.onChangeOffset(offset);
+    };
+
     const rotate = animatedValue.current.interpolate({
       inputRange: [0, 180],
       outputRange: ["0deg", "180deg"],
@@ -130,6 +151,7 @@ export const RefreshControl = forwardRef(
       <RNRefreshControl
         refreshing={refreshing}
         onChangeState={onChangeState}
+        onChangeOffset={onChangeOffset}
         style={[styles.control, style, iOS ? { marginTop: -height } : {}]}
         height={height}
       >

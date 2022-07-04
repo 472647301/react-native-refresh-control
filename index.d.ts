@@ -7,6 +7,7 @@ declare module "@byron-react-native/refresh-control" {
     refreshing?: boolean;
     onRefresh?: () => Promise<void>;
     onChangeState?: (state: number) => void;
+    onChangeOffset?: (offset: number) => void;
   }
 
   export type RNRefreshControlProps = Omit<RefreshControlProps, "onRefresh"> & {
