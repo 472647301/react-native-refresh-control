@@ -94,7 +94,7 @@ function RefreshFlatList<ItemT>(props: RefreshFlatListProps<ItemT>) {
   };
 
   const refreshControl = props.onRefresh ? (
-    <RefreshControl onRefresh={onHeader} />
+    <CustomRefreshControl onRefresh={onHeader} />
   ) : (
     // <CustomRefreshControl onRefresh={onHeader} />
     void 0
@@ -201,15 +201,18 @@ export const CustomRefreshControl = forwardRef<any, RefreshControlProps>(
       }
     };
 
-    const HeaderView = iOS ? View : RNRefreshHeader;
+    const onChangeOffset = (offset: number) => {
+      console.log('--CustomRefreshControl--onChangeOffset---', offset);
+    };
 
     return (
       <RNRefreshControl
         refreshing={refreshing}
         onChangeState={onChangeState}
+        onChangeOffset={onChangeOffset}
         style={[styles.control, style, iOS ? {marginTop: -height} : {}]}
         height={height}>
-        <HeaderView style={styles.row} onLayout={onLayout}>
+        <RNRefreshHeader style={styles.row} onLayout={onLayout}>
           {refreshing ? (
             <ActivityIndicator color={'gray'} />
           ) : (
@@ -224,7 +227,7 @@ export const CustomRefreshControl = forwardRef<any, RefreshControlProps>(
               {`上次更新：${lastTime}`}
             </Text>
           </View>
-        </HeaderView>
+        </RNRefreshHeader>
         {/* {props.children} 不能删除或注释，会导致 Android 无法设置 RefreshContent */}
         {props.children}
       </RNRefreshControl>

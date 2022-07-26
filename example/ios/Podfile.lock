@@ -272,7 +272,7 @@ PODS:
   - React-jsinspector (0.66.4)
   - React-logger (0.66.4):
     - glog
-  - react-native-refresh-control (1.1.1):
+  - react-native-refresh-control (1.2.5):
     - React
   - react-native-spinkit (1.4.1):
     - React
@@ -516,7 +516,7 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 94ce921e1d8ce7023366873ec371f3441383b396
   React-jsinspector: d0374f7509d407d2264168b6d0fad0b54e300b85
   React-logger: 933f80c97c633ee8965d609876848148e3fef438
-  react-native-refresh-control: d564e2afc4f3fc263478136917cca624781b98ab
+  react-native-refresh-control: b4a6e1e3c08126286cb4c5c07eaca45df7d5b715
   react-native-spinkit: da294fd828216ad211fe36a5c14c1e09f09e62db
   React-perflogger: 93075d8931c32cd1fce8a98c15d2d5ccc4d891bd
   React-RCTActionSheet: 7d3041e6761b4f3044a37079ddcb156575fb6d89

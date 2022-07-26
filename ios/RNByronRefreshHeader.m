@@ -2,7 +2,9 @@
 #import <React/RCTRefreshableProtocol.h>
 #import "RCTUtils.h"
 
-@interface RNByronRefreshHeader () <RCTRefreshableProtocol>
+@interface RNByronRefreshHeader () <RCTRefreshableProtocol> {
+    float offset;
+}
 @end
 
 @implementation RNByronRefreshHeader
@@ -40,6 +42,22 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark 监听scrollView的contentOffset改变
 - (void)scrollViewContentOffsetDidChange:(NSDictionary *)change {
     [super scrollViewContentOffsetDidChange:change];
+    if (change && [change.allKeys containsObject:@"new"]) {
+        CGPoint point = [[change objectForKey:@"new"] CGPointValue];
+        if(_onChangeOffset) {
+            if (point.y > 0) {
+                // 与android保持一致 避免为0之后多次通知
+                if (offset != 0) {
+                    offset = 0;
+                    _onChangeOffset(@{@"offset": @(offset)});
+                }
+            } else {
+                // 取绝对值， 与android保持一致
+                offset = fabs(point.y);
+                _onChangeOffset(@{@"offset": @(offset)});
+            }
+        }
+    }
 }
 
 #pragma mark 监听scrollView的contentSize改变
@@ -50,6 +68,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark 监听scrollView的拖拽状态改变
 - (void)scrollViewPanStateDidChange:(NSDictionary *)change {
     [super scrollViewPanStateDidChange:change];
+    
 }
 
 #pragma mark 监听控件的刷新状态
@@ -63,9 +82,7 @@ RCT_NOT_IMPLEMENTED(-(instancetype)initWithCoder : (NSCoder *)aDecoder)
 #pragma mark 监听拖拽比例（控件被拖出来的比例）
 - (void)setPullingPercent:(CGFloat)pullingPercent {
     [super setPullingPercent:pullingPercent];
-    if(_onChangeOffset) {
-        _onChangeOffset(@{@"offset": @(pullingPercent * self.mj_h)});
-    }
+    // 这里获取的offset不准确，而且下滑在上滑会导致值不更新
 }
 
 @synthesize refreshing;

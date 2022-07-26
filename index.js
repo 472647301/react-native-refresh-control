@@ -9,7 +9,9 @@ const iOS = Platform.OS === "ios";
 
 const RNByronRefreshControl = requireNativeComponent("RNByronRefreshControl");
 
-export const RNRefreshHeader = requireNativeComponent("RNByronRefreshHeader");
+export const RNRefreshHeader = requireNativeComponent(
+  iOS ? "RNByronCustomHeader" : "RNByronRefreshHeader"
+);
 
 export function RNRefreshControl(props) {
   const onChangeState = (event) => {
@@ -21,7 +23,7 @@ export function RNRefreshControl(props) {
   };
 
   const onChangeOffset = (event) => {
-    if (!props.onChangeState) {
+    if (!props.onChangeOffset) {
       return;
     }
     const { offset } = event.nativeEvent;
@@ -145,8 +147,6 @@ export const RefreshControl = forwardRef(
       }
     };
 
-    const HeaderView = iOS ? View : RNRefreshHeader;
-
     return (
       <RNRefreshControl
         refreshing={refreshing}
@@ -155,7 +155,7 @@ export const RefreshControl = forwardRef(
         style={[styles.control, style, iOS ? { marginTop: -height } : {}]}
         height={height}
       >
-        <HeaderView style={styles.row} onLayout={onLayout}>
+        <RNRefreshHeader style={styles.row} onLayout={onLayout}>
           {refreshing ? (
             <ActivityIndicator color={"gray"} />
           ) : (
@@ -170,7 +170,7 @@ export const RefreshControl = forwardRef(
               {`上次更新：${lastTime}`}
             </Text>
           </View>
-        </HeaderView>
+        </RNRefreshHeader>
         {/* {props.children} 不能删除或注释，会导致 Android 无法设置 RefreshContent */}
         {props.children}
       </RNRefreshControl>
