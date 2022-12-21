@@ -1,9 +1,5 @@
-import React, { useRef, useState } from "react";
-import { View, Text, Animated, Platform } from "react-native";
-import { requireNativeComponent, StyleSheet } from "react-native";
-import { ActivityIndicator } from "react-native";
-import { forwardRef, useImperativeHandle } from "react";
-import { useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback, forwardRef, useImperativeHandle } from "react";
+import { View, Text, Animated, Platform, requireNativeComponent, StyleSheet, ActivityIndicator } from "react-native";
 
 const iOS = Platform.OS === "ios";
 
@@ -61,7 +57,11 @@ export const RefreshControl = forwardRef(
     const [title, setTitle] = useState("下拉可以刷新");
     const [lastTime, setLastTime] = useState(fetchNowTime());
     const animatedValue = useRef(new Animated.Value(0));
-    const [refreshing, setRefreshing] = useState(props.refreshing ?? false);
+    const [refreshing, setRefreshing] = useState(false);
+    
+    useEffect(() => {
+      setRefreshing(props.refreshing ?? false);
+    }, [props.refreshing]);
 
     useImperativeHandle(ref, () => ({
       startRefresh: () => {
